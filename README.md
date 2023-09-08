@@ -8,7 +8,8 @@ Based on the website https://toshiocp.github.io/Gtk4-tutorial/sec7.html
 - lesson 02 Box and Buttons
 - lesson 03 Scrolled window, Textview
 - lesson 04 Scrolled window, Textview, display file
-- lesson 05 Notebook
+- lesson 05 Notebook, Textview
+- lesson 06 Notebook, Text editor
 
 To run the code for a lesson, go to
 corresponding directory. Make sure

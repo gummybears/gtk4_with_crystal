@@ -1,6 +1,5 @@
 require "gtk4"
 
-
 def get_file(filename : String) : String
   s = File.read_lines(filename).join("\n")
   return s
@@ -31,7 +30,7 @@ end
 app = Gtk::Application.new("hello.example.com", Gio::ApplicationFlags::HandlesOpen)
 app.open_signal.connect do
   window = Gtk::ApplicationWindow.new(app)
-  window.title = "Lesson04 : Notebook file viewer"
+  window.title = "Lesson05 : Notebook file viewer"
   window.set_default_size(600, 400)
   notebook = Gtk::Notebook.new
 
