@@ -1,0 +1,17 @@
+name: pango
+version: 0.2.0
+
+authors:
+  - Hugo Parente Lima <hugo.pl@gmail.com>
+
+dependencies:
+  harfbuzz:
+    github: hugopl/harfbuzz.cr
+    version: ">= 0.1.0"
+  gio:
+    github: hugopl/gio.cr
+    version: ">= 0.1.0"
+
+crystal: ">= 1.7"
+
+license: MIT
