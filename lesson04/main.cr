@@ -9,13 +9,13 @@ end
 args = ARGV
 
 if args.size != 1
-  puts "usage : ./main.out filename"
+  puts "usage : ./a.out filename"
   exit
 end
 
 filename = args[0]
 if File.exists?(filename) == false
-  puts "usage : ./main.out #{filename}"
+  puts "usage : ./a.out #{filename}"
   exit
 end
 
@@ -26,7 +26,7 @@ end
 app = Gtk::Application.new("hello.example.com", Gio::ApplicationFlags::HandlesOpen)
 app.open_signal.connect do
   window = Gtk::ApplicationWindow.new(app)
-  window.title = "Lesson03 : Scrolled window and TextView | Display file contents"
+  window.title = "Lesson03 : Scrolled window and TextView"
   window.set_default_size(400, 300)
 
   #

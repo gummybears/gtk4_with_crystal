@@ -9,14 +9,14 @@ end
 args = ARGV
 
 if args.size == 0
-  puts "usage : ./main.out filename1 ..."
+  puts "usage : ./a.out filename1 ..."
   exit
 end
 
 filenames = [] of String
 args.each do |filename|
   if File.exists?(filename) == false
-    puts "usage : ./main.out #{filename} ..."
+    puts "usage : ./a.out #{filename} ..."
     exit
   end
 
