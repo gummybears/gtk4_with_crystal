@@ -22,7 +22,7 @@ args.each do |filename|
 end
 #
 # Note: Gio::ApplicationFlags::HandlesOpen is needed otherwise we get an error
-# GLib-GIO-CRITICAL **: 23:10:09.297: This application can not open files
+# GLib-GIO-CRITICAL **: 23:10:09.297: This application cannot open files
 #
 app = Gtk::Application.new("hello.example.com", Gio::ApplicationFlags::HandlesOpen)
 app.open_signal.connect do

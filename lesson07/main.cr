@@ -1,81 +1,34 @@
 require "gtk4"
-
-UI = <<-EOT
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-  <object class="GtkApplicationWindow" id="window">
-    <property name="title">Lesson07 : Text editor with menu buttons via builder</property>
-    <property name="default-width">600</property>
-    <property name="default-height">400</property>
-    <child>
-      <object class="GtkBox">
-        <property name="orientation">GTK_ORIENTATION_VERTICAL</property>
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="width-chars">10</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_new">
-                <property name="label">New</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_open">
-                <property name="label">Open</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="hexpand">TRUE</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_save">
-                <property name="label">Save</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="button_close">
-                <property name="label">Close</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="width-chars">10</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkNotebook" id="notebook">
-            <property name="hexpand">TRUE</property>
-            <property name="vexpand">TRUE</property>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
-</interface>
-EOT
+require "./ui.cr"
 
 def get_file(filename : String) : String
   s = File.read_lines(filename).join("\n")
   return s
 end
 
+def file_changed_callback(notebook : Gtk::Notebook, textview : Gtk::TextView,filename : String)
+  puts "file changed"
+end
+
 def notebook_page_add(notebook : Gtk::Notebook, filename : String)
 
   scrolled_window    = Gtk::ScrolledWindow.new
   textview           = Gtk::TextView.new
-  textbuffer         = textview.buffer
+
+  textbuffer = textview.buffer
   if filename =~ /untitled/
     textbuffer.text = ""
   else
     textbuffer.text = get_file(filename)
+
+    #
+    # when we edit the file, ie  the textview changes we need to know about it
+    # only for the files we opened
+    #
+
+    #textview.changed_signal.connect do
+    #  file_changed_callback(notebook,textview,filename)
+    #end
   end
   textview.wrap_mode = Gtk::WrapMode::WordChar
   scrolled_window.child = textview
@@ -92,7 +45,6 @@ def notebook_page_add(notebook : Gtk::Notebook, filename : String)
   #
   # append scrolled window to notebook
   #
-  #notebook.append_page(scrolled_window,label)
   page_index = notebook.append_page(scrolled_window,label)
 
   #
@@ -101,37 +53,19 @@ def notebook_page_add(notebook : Gtk::Notebook, filename : String)
   notebook_page = notebook.page(scrolled_window)
   notebook_page.tab_expand = true
 
+  #
+  # set the notebook's current page
+  #
   notebook.current_page = page_index
 end
 
-def new_file(notebook : Gtk::Notebook, count : Int32)
-  # old code scrolled_window    = Gtk::ScrolledWindow.new
-  # old code textview           = Gtk::TextView.new
-  # old code textbuffer         = textview.buffer
-  # old code textbuffer.text    = ""
-  # old code textview.wrap_mode = Gtk::WrapMode::WordChar
-  # old code scrolled_window.child = textview
-  # old code
-  # old code #
-  # old code # create a page with empty content
-  # old code #
-  # old code filename = "untitled #{count}"
-  # old code label = Gtk::Label.new(filename)
-  # old code #
-  # old code # append scrolled window to notebook
-  # old code #
-  # old code notebook.append_page(scrolled_window,label)
-  # old code #
-  # old code # expand the tabs
-  # old code #
-  # old code notebook_page = notebook.page(scrolled_window)
-  # old code notebook_page.tab_expand = true
-
+def new_file(notebook : Gtk::Notebook, button : Gtk::Button, count : Int32)
   filename = "untitled #{count}"
   notebook_page_add(notebook,filename)
+  button.sensitive = true
 end
 
-def open_file(application : Gtk::Application, window : Gtk::ApplicationWindow, notebook : Gtk::Notebook)
+def open_file(application : Gtk::Application, window : Gtk::ApplicationWindow, notebook : Gtk::Notebook, button : Gtk::Button)
   dialog = Gtk::FileChooserDialog.new(application: application, title: "Choose a file", action: :open)
   dialog.add_button("Cancel", Gtk::ResponseType::Cancel.value)
   dialog.add_button("Open",   Gtk::ResponseType::Accept.value)
@@ -163,26 +97,9 @@ def open_file(application : Gtk::Application, window : Gtk::ApplicationWindow, n
       when .cancel?
 
       when .accept?
-
+        button.sensitive = true
         filename = dialog.file.try(&.path).to_s
         notebook_page_add(notebook,filename)
-        # old code scrolled_window    = Gtk::ScrolledWindow.new
-        # old code textview           = Gtk::TextView.new
-        # old code textbuffer         = textview.buffer
-        # old code textbuffer.text    = get_file(filename)
-        # old code textview.wrap_mode = Gtk::WrapMode::WordChar
-        # old code scrolled_window.child = textview
-        # old code
-        # old code label = Gtk::Label.new(filename)
-        # old code #
-        # old code # append scrolled window to notebook
-        # old code #
-        # old code page_index = notebook.append_page(scrolled_window,label)
-        # old code #
-        # old code # expand the tabs
-        # old code #
-        # old code notebook_page = notebook.page(scrolled_window)
-        # old code notebook_page.tab_expand = true
     end
 
     dialog.destroy
@@ -191,12 +108,42 @@ def open_file(application : Gtk::Application, window : Gtk::ApplicationWindow, n
   dialog.present
 end
 
-def save_file()
-  puts "save file"
+def get_textview(notebook : Gtk::Notebook) : Gtk::TextView
+  page_index      = notebook.current_page
+  scrolled_window = Gtk::ScrolledWindow.cast(notebook.nth_page(page_index))
+  textview        = Gtk::TextView.new
+  if scrolled_window
+    textview = Gtk::TextView.cast(scrolled_window.child)
+  end
+  return textview
 end
 
-def close_file()
-  puts "close file"
+def save_file(notebook : Gtk::Notebook)
+
+  textview = get_textview(notebook)
+  textbuffer = textview.buffer
+  if textbuffer.modified
+    contents = textbuffer.text
+    # puts contents
+  end
+end
+
+#
+# buggy code, depends on the initial state whether there
+# are notebook pages. Need to refactor all this code
+# into a seperate class and keep track of the number of pages
+# created
+#
+def close_file(notebook : Gtk::Notebook, button : Gtk::Button)
+  nr_pages = notebook.n_pages
+  if nr_pages == 0
+    button.sensitive = false
+    return
+  else
+    button.sensitive = true
+  end
+  page_index = notebook.current_page
+  notebook.remove_page(page_index)
 end
 
 count_files = 1
@@ -207,7 +154,9 @@ count_files = 1
 app = Gtk::Application.new("hello.example.com", Gio::ApplicationFlags::HandlesOpen)
 app.activate_signal.connect do
 
-  builder = Gtk::Builder.new_from_string(UI, UI.bytesize.to_i64)
+  ui  = get_ui()
+  #builder = Gtk::Builder.new_from_string(UI, UI.bytesize.to_i64)
+  builder = Gtk::Builder.new_from_string(ui, ui.bytesize.to_i64)
   window  = Gtk::ApplicationWindow.cast(builder["window"])
   #
   # important to set the window application to app
@@ -224,20 +173,21 @@ app.activate_signal.connect do
   button_close = Gtk::Button.cast(builder["button_close"])
 
   button_new.clicked_signal.connect do
-    new_file(notebook,count_files)
+    new_file(notebook,button_close,count_files)
     count_files = count_files + 1
   end
 
   button_open.clicked_signal.connect do
-    open_file(app,window,notebook)
+    open_file(app,window,notebook, button_close)
   end
 
   button_save.clicked_signal.connect do
-    save_file()
+    save_file(notebook)
   end
 
   button_close.clicked_signal.connect do
-    close_file()
+    close_file(notebook, button_close)
+    count_files = count_files - 1
   end
 
   window.present
