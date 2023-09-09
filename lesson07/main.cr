@@ -67,28 +67,68 @@ def get_file(filename : String) : String
   return s
 end
 
-def new_file(notebook : Gtk::Notebook, count : Int32)
+def notebook_page_add(notebook : Gtk::Notebook, filename : String)
+
   scrolled_window    = Gtk::ScrolledWindow.new
   textview           = Gtk::TextView.new
   textbuffer         = textview.buffer
-  textbuffer.text    = ""
+  if filename =~ /untitled/
+    textbuffer.text = ""
+  else
+    textbuffer.text = get_file(filename)
+  end
   textview.wrap_mode = Gtk::WrapMode::WordChar
   scrolled_window.child = textview
 
   #
   # create a page with empty content
   #
-  filename = "untitled #{count}"
-  label = Gtk::Label.new(filename)
+  if filename =~ /untitled/
+    label = Gtk::Label.new(filename)
+  else
+    label = Gtk::Label.new(File.basename(filename))
+  end
+
   #
   # append scrolled window to notebook
   #
-  notebook.append_page(scrolled_window,label)
+  #notebook.append_page(scrolled_window,label)
+  page_index = notebook.append_page(scrolled_window,label)
+
   #
   # expand the tabs
   #
   notebook_page = notebook.page(scrolled_window)
   notebook_page.tab_expand = true
+
+  notebook.current_page = page_index
+end
+
+def new_file(notebook : Gtk::Notebook, count : Int32)
+  # old code scrolled_window    = Gtk::ScrolledWindow.new
+  # old code textview           = Gtk::TextView.new
+  # old code textbuffer         = textview.buffer
+  # old code textbuffer.text    = ""
+  # old code textview.wrap_mode = Gtk::WrapMode::WordChar
+  # old code scrolled_window.child = textview
+  # old code
+  # old code #
+  # old code # create a page with empty content
+  # old code #
+  # old code filename = "untitled #{count}"
+  # old code label = Gtk::Label.new(filename)
+  # old code #
+  # old code # append scrolled window to notebook
+  # old code #
+  # old code notebook.append_page(scrolled_window,label)
+  # old code #
+  # old code # expand the tabs
+  # old code #
+  # old code notebook_page = notebook.page(scrolled_window)
+  # old code notebook_page.tab_expand = true
+
+  filename = "untitled #{count}"
+  notebook_page_add(notebook,filename)
 end
 
 def open_file(application : Gtk::Application, window : Gtk::ApplicationWindow, notebook : Gtk::Notebook)
@@ -124,24 +164,25 @@ def open_file(application : Gtk::Application, window : Gtk::ApplicationWindow, n
 
       when .accept?
 
-        filename           = dialog.file.try(&.path).to_s
-        scrolled_window    = Gtk::ScrolledWindow.new
-        textview           = Gtk::TextView.new
-        textbuffer         = textview.buffer
-        textbuffer.text    = get_file(filename)
-        textview.wrap_mode = Gtk::WrapMode::WordChar
-        scrolled_window.child = textview
-
-        label = Gtk::Label.new(filename)
-        #
-        # append scrolled window to notebook
-        #
-        notebook.append_page(scrolled_window,label)
-        #
-        # expand the tabs
-        #
-        notebook_page = notebook.page(scrolled_window)
-        notebook_page.tab_expand = true
+        filename = dialog.file.try(&.path).to_s
+        notebook_page_add(notebook,filename)
+        # old code scrolled_window    = Gtk::ScrolledWindow.new
+        # old code textview           = Gtk::TextView.new
+        # old code textbuffer         = textview.buffer
+        # old code textbuffer.text    = get_file(filename)
+        # old code textview.wrap_mode = Gtk::WrapMode::WordChar
+        # old code scrolled_window.child = textview
+        # old code
+        # old code label = Gtk::Label.new(filename)
+        # old code #
+        # old code # append scrolled window to notebook
+        # old code #
+        # old code page_index = notebook.append_page(scrolled_window,label)
+        # old code #
+        # old code # expand the tabs
+        # old code #
+        # old code notebook_page = notebook.page(scrolled_window)
+        # old code notebook_page.tab_expand = true
     end
 
     dialog.destroy
@@ -166,8 +207,8 @@ count_files = 1
 app = Gtk::Application.new("hello.example.com", Gio::ApplicationFlags::HandlesOpen)
 app.activate_signal.connect do
 
-  builder  = Gtk::Builder.new_from_string(UI, UI.bytesize.to_i64)
-  window   = Gtk::ApplicationWindow.cast(builder["window"])
+  builder = Gtk::Builder.new_from_string(UI, UI.bytesize.to_i64)
+  window  = Gtk::ApplicationWindow.cast(builder["window"])
   #
   # important to set the window application to app
   #
