@@ -6,8 +6,8 @@ def get_file(filename : String) : String
   return s
 end
 
-def file_changed_callback(notebook : Gtk::Notebook, textview : Gtk::TextView,filename : String)
-  puts "file changed"
+def file_changed_callback(notebook : Gtk::Notebook, textbuffer : Gtk::TextBuffer,filename : String)
+  #puts "textbuffer changed #{filename}"
 end
 
 def notebook_page_add(notebook : Gtk::Notebook, filename : String)
@@ -26,9 +26,9 @@ def notebook_page_add(notebook : Gtk::Notebook, filename : String)
     # only for the files we opened
     #
 
-    #textview.changed_signal.connect do
-    #  file_changed_callback(notebook,textview,filename)
-    #end
+    textbuffer.changed_signal.connect do
+      file_changed_callback(notebook,textbuffer,filename)
+    end
   end
   textview.wrap_mode = Gtk::WrapMode::WordChar
   scrolled_window.child = textview
@@ -120,7 +120,7 @@ end
 
 def save_file(notebook : Gtk::Notebook)
 
-  textview = get_textview(notebook)
+  textview   = get_textview(notebook)
   textbuffer = textview.buffer
   if textbuffer.modified
     contents = textbuffer.text
