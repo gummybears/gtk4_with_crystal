@@ -4,7 +4,7 @@ s = <<-EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <object class="GtkApplicationWindow" id="window">
-    <property name="title">Lesson07 : Text editor with menu buttons via builder</property>
+    <property name="title">Lesson08: Text editor</property>
     <property name="default-width">600</property>
     <property name="default-height">400</property>
     <child>
