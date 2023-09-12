@@ -10,7 +10,7 @@ class TextEditorNotebook
   property button_close : Gtk::Button
 
   property editors      : Array(TextEditor) = [] of TextEditor
-  property nr_files     : Int32 = 0
+  property nr_new_files : Int32 = 1
 
   def initialize(application : Gtk::Application, window : Gtk::ApplicationWindow, notebook : Gtk::Notebook, builder : Gtk::Builder)
     @notebook    = notebook
@@ -140,7 +140,8 @@ class TextEditorNotebook
   end
 
   def new_file
-    filename   = "untitled"
+
+    filename   = "untitled #{@nr_new_files}"
     texteditor = TextEditor.new(filename,@notebook)
     texteditor.add()
     @editors << texteditor
@@ -150,6 +151,8 @@ class TextEditorNotebook
     #
     @button_save.sensitive  = true
     @button_close.sensitive = true
+
+    @nr_new_files += 1
   end
 
   def open_file

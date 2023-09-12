@@ -4,6 +4,8 @@ class TextEditor
   property notebook : Gtk::Notebook
   property modified : Bool = false
 
+  property label    : Gtk::Label
+
   def initialize(filename : String, notebook : Gtk::Notebook)
     @filename = filename
 
@@ -14,6 +16,12 @@ class TextEditor
     end
 
     @notebook = notebook
+
+    @label = Gtk::Label.new(@basename)
+    if @basename !~ /untitled/
+      @label = Gtk::Label.new(File.basename(@basename))
+    end
+
   end
 
   @[GObject::Virtual]
@@ -40,50 +48,28 @@ class TextEditor
     scrolled_window.child = textview
 
     #
-    # create a page with empty content
-    #
-    label = Gtk::Label.new(@basename)
-    if @basename !~ /untitled/
-      label = Gtk::Label.new(File.basename(@basename))
-    end
-
-    #
     # append scrolled window to notebook
     #
-    page_index = @notebook.append_page(scrolled_window,label)
+    page_index = @notebook.append_page(scrolled_window,@label)
 
     #
     # expand the tabs
     #
     notebook_page = @notebook.page(scrolled_window)
     notebook_page.tab_expand = true
-    #notebook_page.clicked_signal.connect do
-    #  puts "clicked on page"
-    #end
 
     #
     # set the notebook's current page
     #
     @notebook.current_page = page_index
 
-    # old code if @basename !~ /untitled/
-    # old code   #
-    # old code   # when we edit the file, ie  the textview changes we need to know about it
-    # old code   # only for the files we opened
-    # old code   #
-    # old code   textbuffer.changed_signal.connect do
-    # old code     @modified  = true
-    # old code     label.text = @basename + "(*)"
-    # old code   end
-    # old code end
-
     #
     # when we edit the file, ie  the textview changes we need to know about it
     # only for the files we opened
     #
     textbuffer.changed_signal.connect do
-      @modified  = true
-      label.text = @basename + "(*)"
+      @modified   = true
+      @label.text = @basename + "(*)"
     end
   end
 
@@ -104,7 +90,7 @@ class TextEditor
 
     if textbuffer.modified
       @modified = false
-      contents = textbuffer.text
+      contents  = textbuffer.text
 
       if File.exists?(filename)
         file = File.open(filename,"w")
@@ -119,14 +105,14 @@ class TextEditor
 
       page_index = @notebook.current_page
 
-      #label = Gtk::Label.cast(@notebook.nth_page(page_index))
-      #if label
-      #  @filename  = filename
-      #  @basename  = File.basename(filename)
-      #  label.text = @basename
-      #end
-      # @notebook.set_label_text = File.basename(filename)
-
+      #
+      # update label of current notebook page to
+      # reflect the textbuffer was saved
+      # to a file
+      #
+      @filename   = filename
+      @basename   = File.basename(filename)
+      @label.text = @basename
     end
   end
 end
