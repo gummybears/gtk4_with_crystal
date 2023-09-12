@@ -9,7 +9,7 @@ class TextEditorNotebook
   property button_save  : Gtk::Button
   property button_close : Gtk::Button
 
-  property current_editor : TextEditor
+  property editors      : Array(TextEditor) = [] of TextEditor
   property nr_files     : Int32 = 0
 
   def initialize(application : Gtk::Application, window : Gtk::ApplicationWindow, notebook : Gtk::Notebook, builder : Gtk::Builder)
@@ -29,7 +29,6 @@ class TextEditorNotebook
     @button_save.sensitive  = false
     @button_close.sensitive = false
 
-    @current_editor = TextEditor.new("",notebook)
     connect_signals()
   end
 
@@ -72,7 +71,7 @@ class TextEditorNotebook
           filename = dialog.file.try(&.path).to_s
           texteditor = TextEditor.new(filename,@notebook)
           texteditor.add()
-          @current_editor = texteditor
+          @editors << texteditor
 
           #
           # enable buttons save and close
@@ -88,40 +87,8 @@ class TextEditorNotebook
     dialog.present
   end
 
-  def get_textview : Gtk::TextView
-    page_index      = @notebook.current_page
-    scrolled_window = Gtk::ScrolledWindow.cast(@notebook.nth_page(page_index))
-    textview        = Gtk::TextView.new
-    if scrolled_window
-      textview = Gtk::TextView.cast(scrolled_window.child)
-    end
-    return textview
-  end
-
-  def save_file(filename : String)
-    contents   = ""
-    textview   = get_textview()
-    textbuffer = textview.buffer
-
-    if textbuffer.modified
-      contents = textbuffer.text
-
-      if File.exists?(filename)
-        file = File.open(filename,"w")
-        file.puts contents
-        file.close
-      else
-        # new file
-        file = File.new(filename,"w")
-        file.puts contents
-        file.close
-      end
-
-      #puts contents
-    end
-  end
-
-  def save_file_dialog
+  def save_file_dialog() : Bool
+    result = false
     dialog = Gtk::FileChooserDialog.new(application: @application, title: "Save a file", action: :save)
     dialog.add_button("Cancel", Gtk::ResponseType::Cancel.value)
     dialog.add_button("Save",   Gtk::ResponseType::Accept.value)
@@ -151,23 +118,32 @@ class TextEditorNotebook
     dialog.response_signal.connect do |response|
       case Gtk::ResponseType.from_value(response)
         when .cancel?
+          result = false
 
         when .accept?
           filename = dialog.file.try(&.path).to_s
-          save_file(filename)
+          page     = @notebook.current_page
+          begin
+            @editors[page].save_file(filename)
+            result = true
+          rescue
+            puts "cannot find editor, exit"
+            exit
+          end
       end
 
       dialog.destroy
     end
     dialog.transient_for = @window
     dialog.present
+    return result
   end
 
   def new_file
     filename   = "untitled"
     texteditor = TextEditor.new(filename,@notebook)
     texteditor.add()
-    @current_editor = texteditor
+    @editors << texteditor
 
     #
     # enable buttons save and close
@@ -180,8 +156,8 @@ class TextEditorNotebook
     open_file_dialog()
   end
 
-  def save_file
-    save_file_dialog()
+  def save_file : Bool
+    return save_file_dialog()
   end
 
   def connect_signals()
@@ -199,10 +175,27 @@ class TextEditorNotebook
     end
 
     @button_close.clicked_signal.connect do
-      page_index = @notebook.current_page
-      @notebook.remove_page(page_index)
-    end
+      page = @notebook.current_page
+      begin
+        if @editors[page]
+          if @editors[page].modified
+            if save_file()
+              notebook.remove_page(page)
+            end
+          else
+            @notebook.remove_page(page)
+          end
 
+          #
+          # remove our editor from @editors
+          #
+          @editors.delete_at(page)
+        end
+      rescue
+        puts "cannot find editor, exit"
+        exit
+      end
+    end
   end
 end
 

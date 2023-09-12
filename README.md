@@ -11,7 +11,7 @@ Based on the website https://toshiocp.github.io/Gtk4-tutorial/sec7.html
 - lesson 05 Notebook, Textview
 - lesson 06 Notebook, Text editor
   lesson 07 continue lesson06 and added callbacks for New/Open/Save/Close
-  lesson 08 refactor lesson07, dry up code
+  lesson 08 refactor lesson07, dry up code into separate classes
 
 To run the code for a lesson, go to
 corresponding directory. Make sure
