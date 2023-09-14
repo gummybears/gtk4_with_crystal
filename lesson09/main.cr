@@ -1,56 +1,17 @@
 require "gtk4"
 
-enum Color
-  Red
-  Green
-  Blue
-end
-
 class App < Gtk::Application
 
   property fullscreen_state : Bool = false
+  property provider         : Gtk::CssProvider
 
   def initialize
     #
     # Note: Gio::ApplicationFlags::HandlesOpen is needed otherwise we get an error
     #
     super(application_id: "hello.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
-  end
+    @provider = Gtk::CssProvider.new
 
-  def menubar1() : Gio::Menu
-
-    #
-    # Menu actions
-    #
-    action_quit = Gio::SimpleAction.new("quit",nil)
-    # disable action_quit.activate_signal.connect(app_quit)
-    self.add_action(action_quit)
-    # not needed action_quit.enabled = true
-    # xxxxx action_quit.activate_signal.connect(app_quit)
-
-    #action_open = Gio::SimpleAction.new("open",nil)
-    #action_open.activate_signal.connect(app_open)
-    #self.add_action(action_open)
-
-    #
-    # Menubar
-    #
-    menubar = Gio::Menu.new
-    menu_item_menu = Gio::MenuItem.new("File","app")
-
-    # sub menu
-    menu = Gio::Menu.new
-    menu_item_connect = Gio::MenuItem.new("_Open", "app.open")
-    menu_item_quit    = Gio::MenuItem.new("_Quit", "app.quit")
-
-    menu.append_item(menu_item_connect)
-    menu.append_item(menu_item_quit)
-
-    # set submenu
-    menu_item_menu.submenu = menu
-    menubar.append_item(menu_item_menu)
-
-    return menubar
   end
 
   def fullscreen_changed(window,action)
@@ -68,22 +29,39 @@ class App < Gtk::Application
     exit()
   end
 
-  def color_activated(action : Gio::SimpleAction) #, parameter : GLib::Variant)
-    new_color = "label.lb { background-color: green; }"
-    provider  = Gtk::CssProvider.new
-    provider.load_named(new_color,nil)
-    #provider.load_from_file(css_file)
+  def color_activated(action : Gio::SimpleAction, parameter : GLib::Variant)
 
-    action.state = "color::green"
+    new_color = parameter.to_s
+    #
+    # remove single quotes
+    #
+    new_color = new_color.gsub(/\'/,"")
+    new_css   = sprintf("label.lb { background-color: %s; }",new_color)
+
+    # need to update the css for the label
+    # but unsure how to do that
+    #
+    # the C code uses  gtk_css_provider_load_from_data (provider, new_css, -1)
+    # and looking at class Gtk::Provider there is a method load_from_data
+    # which accepts an Enumerable(UInt8) as data
+    #
+    # not sure how to do that
+    #
+
+    #@provider.load_from_data(new_css)
+
+
+    #
+    # set menu item state
+    #
+    action.state = parameter
   end
 
-  def menubar2(window) : Gio::Menu
+  def menubar(window) : Gio::Menu
 
     #
     # Menu actions
     #
-
-    #fullscreen_variant_type = GLib::VariantType.new("b")
     action_fullscreen = Gio::SimpleAction.new_stateful("fullscreen",nil, false)
     action_fullscreen.change_state_signal.connect do
       fullscreen_changed(window,action_fullscreen)
@@ -131,7 +109,7 @@ class App < Gtk::Application
     #
     label = Gtk::Label.new
     #
-    # the class is used by CSS Selector
+    # the class is used by the CSS Selector
     #
     label.add_css_class("lb")
     window.child = label
@@ -154,28 +132,25 @@ class App < Gtk::Application
     #
     color_variant_type = GLib::VariantType.new("s")
     action_color = Gio::SimpleAction.new_stateful("color", color_variant_type, "red")
-    action_color.activate_signal.connect do
-      color_activated(action_color)
-      #->color_activated(Gio::SimpleAction)
-    end
+    action_color.activate_signal.connect(->color_activated(Gio::SimpleAction, GLib::Variant))
     add_action(action_color)
 
     #
     # Initialize the css data
     #
-    provider = Gtk::CssProvider.new
+    #provider = Gtk::CssProvider.new
     css_file = Gio::File.new_for_path("app.css")
-    provider.load_from_file(css_file)
+    @provider.load_from_file(css_file)
     #
     # Add CSS to the default GdkDisplay
     # priority = GTK_STYLE_PROVIDER_PRIORITY_APPLICATION)
     #
-    Gtk::StyleContext.add_provider_for_display(Gdk::Display.default.not_nil!,provider,0)
+    Gtk::StyleContext.add_provider_for_display(Gdk::Display.default.not_nil!,@provider,0)
 
     #
     # attach menubar to application's menubar
     #
-    self.menubar = menubar2(window)
+    self.menubar = menubar(window)
     window.show_menubar = true
     window.present
   end
