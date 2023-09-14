@@ -10,9 +10,9 @@ Based on the website https://toshiocp.github.io/Gtk4-tutorial/sec7.html
 - lesson 04 : Scrolled window, Textview, display file
 - lesson 05 : Notebook, Textview
 - lesson 06 : Notebook, Text editor
-  lesson 07 : Continue lesson06 and added callbacks for New/Open/Save/Close
-  lesson 08 : Refactor lesson07, dry up code into separate classes
-  lesson 09 : Application with a Menubar and menu items and menu actions
+- lesson 07 : Continue lesson06 and added callbacks for New/Open/Save/Close
+- lesson 08 : Refactor lesson07, dry up code into separate classes
+- lesson 09 : Application with a Menubar and menu items and menu actions
 
 To run the code for a lesson, go to
 corresponding directory. Make sure
