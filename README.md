@@ -13,6 +13,8 @@ Based on the website https://toshiocp.github.io/Gtk4-tutorial/sec7.html
 - lesson 07 : Continue lesson06 and added callbacks for New/Open/Save/Close
 - lesson 08 : Refactor lesson07, dry up code into separate classes
 - lesson 09 : Application with a Menubar and menu items and menu actions
+- lesson 10 : Continue lesson09 but now using Gtk::Builder to setup the menu and its actions
+              and introducing menu_accelerators
 
 To run the code for a lesson, go to
 corresponding directory. Make sure

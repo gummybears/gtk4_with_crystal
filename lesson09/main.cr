@@ -44,22 +44,9 @@ class App < Gtk::Application
     new_css   = sprintf("label.lb { background-color: %s; }",new_color)
 
     #
-    # need to update the css for the label
-    # but unsure how to do that
+    # update the css for the label
     #
-    # the C code uses  gtk_css_provider_load_from_data (provider, new_css, -1)
-    # and looking at class Gtk::Provider there is a method load_from_data
-    # which accepts an Enumerable(UInt8) as data
-    #
-    #@provider.load_from_data(new_css)
-
-    #
-    # I am using the css files here but
-    # load_from_data should be used
-    #
-    css_file = Gio::File.new_for_path("#{new_color}.css")
-    @provider.load_from_file(css_file)
-
+    @provider.load_from_data(new_css.to_slice)
 
     #
     # set menu item state
@@ -148,7 +135,7 @@ class App < Gtk::Application
     #
     # Initialize the css data
     #
-    css_file = Gio::File.new_for_path("red.css")
+    css_file = Gio::File.new_for_path("app.css")
     @provider.load_from_file(css_file)
 
     #
