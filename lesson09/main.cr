@@ -10,6 +10,11 @@ class App < Gtk::Application
     # Note: Gio::ApplicationFlags::HandlesOpen is needed otherwise we get an error
     #
     super(application_id: "hello.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
+
+    #
+    # not sure this is the correct way
+    # something to do with the garbage collector
+    #
     @provider = Gtk::CssProvider.new
 
   end
@@ -38,6 +43,7 @@ class App < Gtk::Application
     new_color = new_color.gsub(/\'/,"")
     new_css   = sprintf("label.lb { background-color: %s; }",new_color)
 
+    #
     # need to update the css for the label
     # but unsure how to do that
     #
@@ -45,10 +51,14 @@ class App < Gtk::Application
     # and looking at class Gtk::Provider there is a method load_from_data
     # which accepts an Enumerable(UInt8) as data
     #
-    # not sure how to do that
-    #
-
     #@provider.load_from_data(new_css)
+
+    #
+    # I am using the css files here but
+    # load_from_data should be used
+    #
+    css_file = Gio::File.new_for_path("#{new_color}.css")
+    @provider.load_from_file(css_file)
 
 
     #
@@ -138,9 +148,9 @@ class App < Gtk::Application
     #
     # Initialize the css data
     #
-    #provider = Gtk::CssProvider.new
-    css_file = Gio::File.new_for_path("app.css")
+    css_file = Gio::File.new_for_path("red.css")
     @provider.load_from_file(css_file)
+
     #
     # Add CSS to the default GdkDisplay
     # priority = GTK_STYLE_PROVIDER_PRIORITY_APPLICATION)
