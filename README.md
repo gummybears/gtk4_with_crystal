@@ -15,6 +15,7 @@ Based on the website https://toshiocp.github.io/Gtk4-tutorial/sec7.html
 - lesson 09 : Application with a Menubar and menu items and menu actions
 - lesson 10 : Continue lesson09 but now using Gtk::Builder to setup the menu and its actions
               and introducing menu_accelerators
+- lesson 11 : Continue with lesson08 but now with a File/Edit menu
 
 To run the code for a lesson, go to
 corresponding directory. Make sure

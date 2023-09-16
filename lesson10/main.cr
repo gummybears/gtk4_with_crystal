@@ -8,9 +8,7 @@ class App < Gtk::Application
   property provider         : Gtk::CssProvider
 
   def initialize
-    #
-    # Note: Gio::ApplicationFlags::HandlesOpen is needed otherwise we get an error
-    #
+
     super(application_id: "hello.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
 
     #
@@ -103,9 +101,9 @@ class App < Gtk::Application
     #
     # Menu bar from get_ui()
     #
-    ui       = get_ui()
-    builder  = Gtk::Builder.new_from_string(ui, ui.bytesize.to_i64)
-    menubar  = Gio::Menu.cast(builder["menubar"])
+    ui      = get_ui()
+    builder = Gtk::Builder.new_from_string(ui, ui.bytesize.to_i64)
+    menubar = Gio::Menu.cast(builder["menubar"])
 
     #
     # Menu actions
@@ -120,8 +118,14 @@ class App < Gtk::Application
     #
     # Initialize the css data
     #
-    css_file = Gio::File.new_for_path("app.css")
-    @provider.load_from_file(css_file)
+    filename = "app.css"
+    if File.exists?(filename)
+      css_file = Gio::File.new_for_path("app.css")
+      @provider.load_from_file(css_file)
+    else
+      puts "file #{filename} not found, exit"
+      exit(0)
+    end
 
     #
     # Add CSS to the default GdkDisplay
