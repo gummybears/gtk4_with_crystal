@@ -34,10 +34,9 @@ class TextEditor
   end
 
   def add()
-    scrolled_window    = Gtk::ScrolledWindow.new
-    textview           = Gtk::TextView.new
-
-    textbuffer = textview.buffer
+    scrolled_window = Gtk::ScrolledWindow.new
+    textview        = Gtk::TextView.new
+    textbuffer      = textview.buffer
     if @basename =~ /untitled/
       textbuffer.text = ""
     else

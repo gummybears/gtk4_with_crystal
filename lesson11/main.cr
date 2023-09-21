@@ -24,7 +24,7 @@ class TextEditorApp < Gtk::Application
     notebook = TextEditorNotebook.new(self,window,Gtk::Notebook.cast(builder["notebook"]), builder)
 
     #
-    # Menu bar from get_ui()
+    # Menu bar from get_menu()
     #
     ui      = get_menu()
     builder = Gtk::Builder.new_from_string(ui, ui.bytesize.to_i64)
