@@ -1,0 +1,6 @@
+name: lesson003
+version: 0.1.0
+
+dependencies:
+  gtk4:
+    github: hugopl/gtk4.cr

@@ -1,0 +1,17 @@
+name: gtk4_opengl
+version: 0.15.0
+
+dependencies:
+  gtk4:
+    github: hugopl/gtk4.cr
+
+  lib_gl:
+    github: calebuharrison/LibGL
+    branch: master
+
+  stumpy_gif:
+    github: stumpycr/stumpy_gif
+
+  stumpy_png:
+    github: stumpycr/stumpy_png
+    version: "~> 5.0"

@@ -1,0 +1,38 @@
+version: 2.0
+shards:
+  gi-crystal:
+    git: https://github.com/hugopl/gi-crystal.git
+    version: 0.17.0
+
+  gio:
+    git: https://github.com/hugopl/gio.cr.git
+    version: 0.1.0
+
+  gtk4:
+    git: https://github.com/hugopl/gtk4.cr.git
+    version: 0.15.0
+
+  harfbuzz:
+    git: https://github.com/hugopl/harfbuzz.cr.git
+    version: 0.2.0
+
+  lib_gl:
+    git: https://github.com/calebuharrison/libgl.git
+    version: 0.1.0+git.commit.fed2ca7f6cd15efea94458b234c3ca5b0a8ffc5e
+
+  pango:
+    git: https://github.com/hugopl/pango.cr.git
+    version: 0.2.0
+
+  stumpy_core:
+    git: https://github.com/stumpycr/stumpy_core.git
+    version: 1.9.1
+
+  stumpy_gif:
+    git: https://github.com/stumpycr/stumpy_gif.git
+    version: 0.2.1
+
+  stumpy_png:
+    git: https://github.com/stumpycr/stumpy_png.git
+    version: 5.0.1
+

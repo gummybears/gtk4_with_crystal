@@ -1,21 +1,16 @@
 ### Gtk4 tutorial
 
 Based on the website https://toshiocp.github.io/Gtk4-tutorial/sec7.html
-
+and Gtk4 demos
 
 #### Contents
-- lesson 01 : Application
-- lesson 02 : Box and Buttons
-- lesson 03 : Scrolled window, Textview
-- lesson 04 : Scrolled window, Textview, display file
-- lesson 05 : Notebook, Textview
-- lesson 06 : Notebook, Text editor
-- lesson 07 : Continue lesson06 and added callbacks for New/Open/Save/Close
-- lesson 08 : Refactor lesson07, dry up code into separate classes
-- lesson 09 : Application with a Menubar and menu items and menu actions
-- lesson 10 : Continue lesson09 but now using Gtk::Builder to setup the menu and its actions
-              and introducing menu_accelerators
-- lesson 11 : Continue with lesson08 but now with a File/Edit menu
+- lesson 001 : Application Class
+- lesson 002 : Assistant
+- lesson 003 : Colors
+- lesson 004 : Builder
+- lesson 005 : Clipboard
+- lesson 006 : Comboboxes
+- lesson 007 : Constraints
 
 To run the code for a lesson, go to
 corresponding directory. Make sure

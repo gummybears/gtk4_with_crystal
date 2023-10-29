@@ -1,0 +1,178 @@
+require "gtk4"
+
+class MaskEntry
+  property entry : Gtk::Entry = Gtk::Entry.new
+  property mask  : String = ""
+end
+
+class Lesson006 < Gtk::Application
+
+  def initialize()
+    super(application_id: "comboboxes.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
+  end
+
+  @[GObject::Virtual]
+  def activate
+
+    window = Gtk::Window.new
+    window.set_default_size(400,400)
+    window.title = "Comboboxes"
+
+    vbox = Gtk::Box.new(orientation: :vertical, spacing: 12)
+    vbox.margin_start  = 10
+    vbox.margin_end    = 10
+    vbox.margin_top    = 10
+    vbox.margin_bottom = 10
+    window.child       = vbox
+
+    #
+    # A combobox demonstrating cell renderers, separators and
+    # insensitive rows
+    #
+    frame = Gtk::Frame.new("Items with icons")
+    vbox.append(frame)
+
+    box = Gtk::Box.new(orientation: :vertical, spacing: 0)
+    box.margin_start  = 5
+    box.margin_end    = 5
+    box.margin_top    = 5
+    box.margin_bottom = 5
+    frame.child       = box
+
+    model = create_icon_store()
+    combo = Gtk::ComboBox.new_with_model(model)
+    box.append(combo)
+
+    # column 0, icon names
+    renderer = Gtk::CellRendererPixbuf.new
+    combo.as(Gtk::CellLayout).pack_start(renderer,false)
+    combo.as(Gtk::CellLayout).add_attribute(renderer,"icon-name",0)
+    # combo.as(Gtk::CellLayout).set_cell_data_func = ->set_sensitive(Gtk::CellLayout,Gtk::CellRenderer,Gtk::TreeModel,Gtk::TreeIter,Pointer(Void))
+
+    # column 1, labels
+    renderer = Gtk::CellRendererText.new
+    combo.as(Gtk::CellLayout).pack_start(renderer,true)
+    combo.as(Gtk::CellLayout).add_attribute(renderer,"text",1)
+    # combo.as(Gtk::CellLayout).set_cell_data_func = ->set_sensitive(Gtk::CellLayout,Gtk::CellRenderer,Gtk::TreeModel,Gtk::TreeIter,Pointer(Void))
+
+    combo.row_separator_func = row_separator
+    # activate first row (zero based)
+    combo.active = 0
+
+    #
+    # A combobox demonstrating trees.
+    #
+    frame = Gtk::Frame.new("Where are we ?")
+    vbox.append(frame)
+
+    box = Gtk::Box.new(orientation: :vertical, spacing: 12)
+    box.margin_start  = 5
+    box.margin_end    = 5
+    box.margin_top    = 5
+    box.margin_bottom = 5
+    frame.child       = box
+
+    combo = Gtk::ComboBoxText.new
+    # fill_combo_entry(combo)
+    box.append(combo)
+
+
+    #
+    # A GtkComboBoxEntry with validation
+    #
+    frame = Gtk::Frame.new("Editable")
+    vbox.append(frame)
+
+    box = Gtk::Box.new(orientation: :vertical, spacing: 12)
+    box.margin_start  = 5
+    box.margin_end    = 5
+    box.margin_top    = 5
+    box.margin_bottom = 5
+    frame.child       = box
+
+    combo = Gtk::ComboBoxText.new
+    fill_combo_entry(combo)
+    box.append(combo)
+
+    # not sure how to define a new type for Gtk mask_entry      = MaskEntry.new
+    # not sure how to define a new type for Gtk mask_entry.mask = "^([0-9]*|One|Two|2\302\275|Three)$";
+    # not sure how to define a new type for Gtk entry           = GObject::Value.new(pointerof(mask_entry),GICrystal::Transfer::None)
+    # not sure how to define a new type for Gtk combo.child = entry
+
+    #
+    # A combobox with string IDs
+    #
+    frame = Gtk::Frame.new("String IDs")
+    vbox.append(frame)
+
+    box = Gtk::Box.new(orientation: :vertical, spacing: 0)
+    box.margin_start  = 5
+    box.margin_end    = 5
+    box.margin_top    = 5
+    box.margin_bottom = 5
+
+    frame.child = box
+
+    combo = Gtk::ComboBoxText.new
+    combo.append("never","Not visible")
+    combo.append("when-active","Visible when active")
+    combo.append("always", "Always visible")
+    box.append(combo)
+
+    entry = Gtk::Entry.new
+    #
+    # bind the combobox to entry
+    #
+    combo.bind_property("active-id",entry,"text",GObject::BindingFlags::Bidirectional)
+    box.append(entry)
+
+    window.application = self
+    window.present
+  end
+
+  def set_sensitive(cell_layout : Gtk::CellLayout, cell : Gtk::CellRenderer, tree_model : Gtk::TreeModel,iter : Gtk::TreeIter,data)
+  end
+
+  def row_separator
+  end
+
+  def fill_combo_entry(combo)
+    combo.append_text("One")
+    combo.append_text("Two")
+    combo.append_text("2\302\275")
+    combo.append_text("Three")
+  end
+
+  def create_icon_store()
+
+    icon_names = ["dialog-warning", "process-stop","document-new",  "edit-clear", "", "document-open"]
+    labels     = ["Warning", "Stop", "New", "Clear", "", "Open"]
+
+    #
+    # Create a store with 2 columns
+    # to hold the icon names and their labels
+    #
+    store = Gtk::ListStore.new(GObject::TYPE_STRING, GObject::TYPE_STRING)
+    (0..icon_names.size-1).each do |i|
+      if icon_names[i] != ""
+        #
+        # create a new row
+        #
+        iter = store.append()
+        #
+        # set the data for this row and column
+        #
+        store.set_value(iter, 0, icon_names[i])
+        store.set_value(iter, 1, labels[i])
+      # else
+      #   iter = store.append()
+      #   store.set_value(iter, 0, "")
+      #   store.set_value(iter, 1, "")
+      end
+    end
+
+    return store.as(Gtk::TreeModel)
+  end
+end
+
+exit(Lesson006.new.run)

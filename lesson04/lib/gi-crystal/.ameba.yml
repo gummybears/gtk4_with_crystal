@@ -1,9 +1,0 @@
-Excluded:
-  - src/auto
-
-Lint/NotNil:
-  Enabled: false
-Metrics/CyclomaticComplexity:
-  Enabled: false
-Performance/AnyInsteadOfEmpty:
-  Enabled: false
