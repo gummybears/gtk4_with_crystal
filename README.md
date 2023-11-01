@@ -10,7 +10,8 @@ and Gtk4 demos
 - lesson 004 : Builder
 - lesson 005 : Clipboard
 - lesson 006 : Comboboxes
-- lesson 007 : Constraints
+- lesson 007 : Simple Constraints
+- lesson 008 : Interactive Constraints
 
 To run the code for a lesson, go to
 corresponding directory. Make sure
@@ -20,9 +21,9 @@ your terminal
 
 ````
 $ shards install
+$ ./bin/gi-crystal
 $ ./build.sh
 $ ./a.out
 ````
-
 The build.sh script will compile and link a lesson
 and produces the executable a.out
