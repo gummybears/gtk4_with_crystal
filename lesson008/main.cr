@@ -7,7 +7,7 @@
 require "gtk4"
 require "./interactive_grid.cr"
 
-class Lesson007 < Gtk::Application
+class Lesson008 < Gtk::Application
 
   def initialize()
     super(application_id: "interactive_constraints.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
@@ -27,8 +27,6 @@ class Lesson007 < Gtk::Application
     window.application = self
     window.present
   end
-
-
 end
 
-exit(Lesson007.new.run)
+exit(Lesson008.new.run)

@@ -38,14 +38,6 @@ class Lesson005 < Gtk::Application
 
     copy_button.clicked_signal.connect do
 
-      # selected_item = combobox.selected_item
-      # if selected_item
-      #   puts "class #{selected_item.class}"
-      # end
-      #
-      # selected = combobox.selected
-      # puts "selected #{selected}"
-
       visible_child      = source_stack.visible_child
       visible_child_name = source_stack.visible_child_name
 
@@ -69,13 +61,14 @@ class Lesson005 < Gtk::Application
 
       case visible_child_name
         when "Text"
-          result = Gio::AsyncResult.new
+          result = Gio::SimpleAsyncResult.new
           value  = source_clipboard.read_value_finish(result)
           if value
-            dest_stack.set_visible_child_name = "Text"
+            dest_stack.visible_child_name = "Text"
             child = dest_stack.visible_child
-            child.as(Gtk::Label).text = value
-            #gtk_label_set_label (GTK_LABEL (child), g_value_get_string (value));
+
+            # return the value of type GObject::Value as a string
+            child.as(Gtk::Label).text = value.as_s
           end
       end
     end
