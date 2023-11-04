@@ -4,56 +4,22 @@
 # author : W.F.F. Neimeijer
 # copyright 2007-2023, ICUBIC
 #
-#class DragValues
-#  property x        : Float64 = 0.0
-#  property y        : Float64 = 0.0
-#  property offset_x : Float64 = 0.0
-#  property offset_y : Float64 = 0.0
-#end
-
-class Pair
-  property x : Float64 = 0.0
-  property y : Float64 = 0.0
-end
-
-#module Gtk
-#  class GestureDrag < GestureSingle
-#
-#    def offset(pair : Pair) : Bool
-#      x = pair.x #.to_unsafe
-#      y = pair.y #.to_unsafe
-#      # C call
-#      _retval = LibGtk.gtk_gesture_drag_get_offset(to_unsafe, x, y)
-#      # Return value handling
-#      GICrystal.to_bool(_retval)
-#    end
-#
-#    def start_point(pair : Pair) : Bool
-#      x = Pointer(pair.x) #.to_unsafe
-#      y = Pointer(pair.y) #.to_unsafe
-#
-#      # C call
-#      _retval = LibGtk.gtk_gesture_drag_get_start_point(to_unsafe, x,y)
-#      pair.x = x
-#      pair.y = y
-#      # Return value handling
-#      GICrystal.to_bool(_retval)
-#    end
-#
-#  end
-#
-#end
-
 class InteractveGrid < Gtk::Widget
-
+  property parent  : Gtk::Widget
   property button1 : Gtk::Button
   property button2 : Gtk::Button
   property button3 : Gtk::Button
   property guide   : Gtk::ConstraintGuide = Gtk::ConstraintGuide.new
   property manager : Gtk::ConstraintLayout
+  property constraint : Gtk::Constraint = Gtk::Constraint.new
+
+  property x        : Float64 = 0.0
+  property y        : Float64 = 0.0
+  property offset_x : Float64 = 0.0
+  property offset_y : Float64 = 0.0
 
   def initialize(parent)
-
+    @parent  = parent
     @button1 = Gtk::Button.new_with_label("Child 1")
     @button2 = Gtk::Button.new_with_label("Child 2")
     @button3 = Gtk::Button.new_with_label("Child 3")
@@ -79,57 +45,63 @@ class InteractveGrid < Gtk::Widget
     parent.append(@button3)
 
     drag = Gtk::GestureDrag.new
-    x        = 0.0.to_f64
-    y        = 0.0.to_f64
-    offset_x = 0.0.to_f64
-    offset_y = 0.0.to_f64
+    drag.drag_begin_signal.connect(->drag_begin_callback(Float64,Float64))
+    drag.drag_update_signal.connect(->drag_update_callback(Float64,Float64))
+    drag.drag_end_signal.connect(->drag_begin_callback(Float64,Float64))
 
-    #drag.drag_update_signal.connect do
-    #  ->drag_callback(Float64,Float64)
+    # do
+    #  puts "drag update"
+    #  layout = @manager
+    #  flag = drag.start_point(x,y)
+    #
+    #  constraint = Gtk::Constraint.new_constant(
+    #                                           @guide,
+    #                                           Gtk::ConstraintAttribute::Left,
+    #                                           Gtk::ConstraintRelation::Eq,
+    #                                           x + offset_x,
+    #                                           Gtk::ConstraintStrength::Required.to_i32
+    #                                           )
+    #  layout.add_constraint(constraint)
+    #  parent.queue_allocate
     #end
-
-    drag.drag_begin_signal.connect do
-      puts "drag begin"
-    end
-
-    drag.drag_end_signal.connect do
-      puts "drag end"
-    end
-
-    drag.drag_update_signal.connect do
-      puts "drag update"
-      layout = @manager
-      flag = drag.start_point(x,y)
-
-      constraint = Gtk::Constraint.new_constant(
-                                               @guide,
-                                               Gtk::ConstraintAttribute::Left,
-                                               Gtk::ConstraintRelation::Eq,
-                                               x + offset_x,
-                                               Gtk::ConstraintStrength::Required.to_i32
-                                               )
-      layout.add_constraint(constraint)
-      parent.queue_allocate
-    end
 
     parent.add_controller(drag)
   end
 
-  #def drag_callback(offset_x : Float64, offset_y : Float64)
-  #  puts "x #{offset_x} y #{offset_y}"
-  #  layout = @manager
-  #  #
-  #  #  drag.start_point(x,y)
-  #  #  constraint = Gtk::Constraint.new_constant(
-  #  #                                           @guide,
-  #  #                                           Gtk::ConstraintAttribute::Left,
-  #  #                                           Gtk::ConstraintRelation::Eq,
-  #  #                                           x + offset_x,
-  #  #                                           Gtk::ConstraintStrength::Required.to_i32
-  #  #                                           )
-  #  #  layout.add_constraint(constraint)
-  #  #  self.queue_allocate
-  #end
+  def drag_begin_callback(x : Float64, y : Float64)
+    puts "drag begin : x #{x} y #{y}"
+    #@x = x
+    #@y = y
+  end
+
+  def drag_update_callback(x : Float64, y : Float64)
+    puts "drag update : x #{x} y #{y}"
+    @offset_x = x
+    @offset_y = y
+    #@x     = x
+    #@y     = y
+    layout = @manager
+
+    #if @constraint
+    #  layout.remove_constraint(@constraint)
+    #else
+      @constraint = Gtk::Constraint.new_constant(
+                                              @guide,
+                                              Gtk::ConstraintAttribute::Left,
+                                              Gtk::ConstraintRelation::Eq,
+                                              @x + @offset_x,
+                                              Gtk::ConstraintStrength::Required.to_i32
+                                              )
+      layout.add_constraint(@constraint)
+    #end
+    @parent.queue_allocate
+  end
+
+  def drag_end_callback(x : Float64, y : Float64)
+    puts "drag end : x #{x} y #{y}"
+    #@x = x
+    #@y = y
+  end
 
   def constraints()
 
