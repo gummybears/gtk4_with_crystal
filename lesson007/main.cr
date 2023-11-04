@@ -27,8 +27,6 @@ class Lesson007 < Gtk::Application
     window.application = self
     window.present
   end
-
-
 end
 
 exit(Lesson007.new.run)

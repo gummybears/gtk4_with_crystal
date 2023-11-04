@@ -24,7 +24,7 @@ class Lesson001 < Gtk::Application
   property app_logo       : Gio::SimpleAction
 
   def initialize()
-    super(application_id: "hello#{@@id}.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
+    super(application_id: "application#{@@id}.example.com", flags: Gio::ApplicationFlags::HandlesOpen)
 
     @app_new    = Gio::SimpleAction.new("new",nil)
     @app_quit   = Gio::SimpleAction.new("quit",nil)

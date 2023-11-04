@@ -5,7 +5,9 @@
 # copyright 2007-2023, ICUBIC
 #
 
-# Not used
+#
+# Not used, perhaps in the future
+#
 class ColorWidget < Gtk::Widget
 
   property parent   : Gtk::Widget
@@ -14,9 +16,6 @@ class ColorWidget < Gtk::Widget
   property time2    : UInt64  = 0
   property t        : Float64 = 0.0
   property snapshot : Gtk::Snapshot
-
-  #property frameclock : Gdk::FrameClock = Gdk::FrameClock.new
-  #guint tick_cb;
 
   def initialize(parent : Gtk::Widget)
     @parent   = parent

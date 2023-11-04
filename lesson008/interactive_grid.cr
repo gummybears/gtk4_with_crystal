@@ -70,8 +70,8 @@ class InteractveGrid < Gtk::Widget
 
   def drag_begin_callback(x : Float64, y : Float64)
     puts "drag begin : x #{x} y #{y}"
-    #@x = x
-    #@y = y
+    @x = x
+    @y = y
   end
 
   def drag_update_callback(x : Float64, y : Float64)
@@ -99,8 +99,8 @@ class InteractveGrid < Gtk::Widget
 
   def drag_end_callback(x : Float64, y : Float64)
     puts "drag end : x #{x} y #{y}"
-    #@x = x
-    #@y = y
+    @x = x
+    @y = y
   end
 
   def constraints()
