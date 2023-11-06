@@ -49,33 +49,17 @@ class InteractveGrid < Gtk::Widget
     drag.drag_update_signal.connect(->drag_update_callback(Float64,Float64))
     drag.drag_end_signal.connect(->drag_begin_callback(Float64,Float64))
 
-    # do
-    #  puts "drag update"
-    #  layout = @manager
-    #  flag = drag.start_point(x,y)
-    #
-    #  constraint = Gtk::Constraint.new_constant(
-    #                                           @guide,
-    #                                           Gtk::ConstraintAttribute::Left,
-    #                                           Gtk::ConstraintRelation::Eq,
-    #                                           x + offset_x,
-    #                                           Gtk::ConstraintStrength::Required.to_i32
-    #                                           )
-    #  layout.add_constraint(constraint)
-    #  parent.queue_allocate
-    #end
-
     parent.add_controller(drag)
   end
 
   def drag_begin_callback(x : Float64, y : Float64)
-    puts "drag begin : x #{x} y #{y}"
+    #puts "drag begin : x #{x} y #{y}"
     @x = x
     @y = y
   end
 
   def drag_update_callback(x : Float64, y : Float64)
-    puts "drag update : x #{x} y #{y}"
+    #puts "drag update : x #{x} y #{y}"
     @offset_x = x
     @offset_y = y
     #@x     = x
@@ -98,7 +82,7 @@ class InteractveGrid < Gtk::Widget
   end
 
   def drag_end_callback(x : Float64, y : Float64)
-    puts "drag end : x #{x} y #{y}"
+    #puts "drag end : x #{x} y #{y}"
     @x = x
     @y = y
   end

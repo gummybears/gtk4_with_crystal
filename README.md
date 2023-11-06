@@ -8,11 +8,19 @@ and Gtk4 demos
 - lesson 002 : Assistant
 - lesson 003 : Colors
 - lesson 004 : Builder
-- lesson 005 : Clipboard (not finished yet, paste method)
-- lesson 006 : Comboboxes (not finished yet, MaskEntry not implemented)
+- lesson 005 : Clipboard
+               status : paste method not finished
+
+- lesson 006 : Comboboxes
+               status : MaskEntry not implemented
+
 - lesson 007 : Simple Constraints
-- lesson 008 : Interactive Constraints (not finished yet, drag method)
+- lesson 008 : Interactive Constraints
+               status : drag method using callbacks
 - lesson 009 : Constraints using Visual Format Language
+               status : not sure about the call to add_constraints_from_description
+- lesson 010 : Constraints using Gtk::Builder
+
 
 To run the code for a lesson, go to
 corresponding directory. Make sure

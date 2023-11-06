@@ -17,7 +17,7 @@ class Lesson009 < Gtk::Application
   def activate
 
     window       = Gtk::Window.new
-    window.title = "Constraints using VFL"
+    window.title = "Constraints -- VFL"
     window.set_default_size(260,-1)
 
     box  = Gtk::Box.new(orientation: :vertical,spacing: 12)

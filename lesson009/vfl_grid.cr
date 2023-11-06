@@ -72,13 +72,24 @@ class VflGrid < Gtk::Widget
         "H:|-[button1(==button2)]-12-[button2]-|",
         "H:|-[button3]-|",
         "V:|-[button1]-12-[button3(==button1)]-|",
-        "V:|-[button2]-12-[button3(==button2)]-|",
+        "V:|-[button2]-12-[button3(==button2)]-|"
       ]
 
-    #views = uninitialized Pointer(Void)
-    views = Pointer(Void).null
-    list = @manager.add_constraints_from_description(vfl,8,8,views)
+    # views = uninitialized Pointer(Void)
+
+    # h = Hash(String,Gtk::Widget).new
+    # h["button1"] = @button1
+    # h["button2"] = @button2
+    # h["button3"] = @button3
+    # views = pointerof(h)
+
+    # s = ["button1","button2","button3"]
+    # views = pointerof(s)
+
+    #views = Pointer(Void).null
+    views = ["button1","button2","button3"]
+    list  = @manager.add_constraints_from_description(vfl,8,8,pointerof(views))
     #Pointer(Void).null) #views) #pointerof(views)) #Pointer(Void).null)
-    puts "list #{list.class} size #{list.size}"
+    #puts "list #{list.class} size #{list.size}"
   end
 end
