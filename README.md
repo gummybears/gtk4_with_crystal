@@ -20,7 +20,8 @@ and Gtk4 demos
 - lesson 009 : Constraints using Visual Format Language
                status : not sure about the call to add_constraints_from_description
 - lesson 010 : Constraints using Gtk::Builder
-
+- lesson 011 : Cursors
+- lesson 012 : Dialogs
 
 To run the code for a lesson, go to
 corresponding directory. Make sure
