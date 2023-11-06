@@ -8,9 +8,9 @@ require "gtk4"
 require "./ui.cr"
 
 class ConstraintsGrid < Gtk::Widget
-  def initialize
-    super()
-  end
+  # not needed def initialize
+  # not needed   super()
+  # not needed end
 end
 
 class Lesson010 < Gtk::Application
