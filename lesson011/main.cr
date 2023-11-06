@@ -19,7 +19,6 @@ class Lesson011 < Gtk::Application
 
     builder = Gtk::Builder.new_from_string(ui, ui.bytesize.to_i64)
     window  = Gtk::Window.cast(builder["window"])
-    window.center_widget = true
     window.application = self
     window.present
   end
