@@ -54,6 +54,5 @@ class ColorWidget < Gtk::Widget
     alpha = 1.0
 
     @snapshot.append_color(c,0_f32,0_f32,w,h)
-    #gtk_snapshot_append_color (snapshot, &c, &GRAPHENE_RECT_INIT (0, 0, w, h));
   end
 end
