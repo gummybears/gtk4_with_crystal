@@ -2,15 +2,15 @@ version: 2.0
 shards:
   gi-crystal:
     git: https://github.com/hugopl/gi-crystal.git
-    version: 0.17.0
+    version: 0.20.0
 
   gio:
     git: https://github.com/hugopl/gio.cr.git
-    version: 0.1.0
+    version: 0.2.0
 
   gtk4:
     git: https://github.com/hugopl/gtk4.cr.git
-    version: 0.15.0
+    version: 0.16.0
 
   harfbuzz:
     git: https://github.com/hugopl/harfbuzz.cr.git
@@ -18,5 +18,5 @@ shards:
 
   pango:
     git: https://github.com/hugopl/pango.cr.git
-    version: 0.2.0
+    version: 0.3.0
 

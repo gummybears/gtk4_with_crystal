@@ -240,7 +240,7 @@ s = <<-EOT
         </child>
         <child>
           <object class="GtkBox" id="buttonBox">
-            <property name="orientation">center</property>
+            <property name="halign">center</property>
             <child>
               <object class="GtkButton" id="button_close">
                 <property name="label" translatable="yes">Close</property>

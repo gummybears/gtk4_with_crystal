@@ -4,3 +4,5 @@ version: 0.1.0
 dependencies:
   gtk4:
     github: hugopl/gtk4.cr
+    version: 0.16.0
+
